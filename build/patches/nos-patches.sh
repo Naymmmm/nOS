@@ -84,7 +84,7 @@ FILES="${SRCDIR}/sys/conf/files"
 if grep -q 'kern_nos.c' "${FILES}"; then
     skip "kern_nos.c already in sys/conf/files"
 else
-    echo 'kern/kern_nos.c			optional nos' >> "${FILES}"
+    echo 'kern/kern_nos.c			standard' >> "${FILES}"
     ok "kern_nos.c added to sys/conf/files"
 fi
 

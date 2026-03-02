@@ -13,7 +13,6 @@ device          virtio                  # VirtIO core
 device          virtio_pci              # VirtIO PCI transport
 device          virtio_blk              # VirtIO block device
 device          virtio_scsi             # VirtIO SCSI
-device          virtio_net              # VirtIO network (vtnet)
 device          virtio_balloon          # Memory balloon
 device          virtio_random           # Entropy source
 device          virtio_console          # Paravirtual console
@@ -24,23 +23,16 @@ device          nvd
 
 # QEMU display / framebuffer
 device          vt                      # Virtual terminal (vt(4))
-device          vt_vga
-device          vt_efifb
+device          vt_efifb                # EFI framebuffer (arm64)
 
-# QEMU virtio-gpu / QXL
-device          drm
 
 # ============================================================
 # Filesystem support
 # ============================================================
-options         ZFS                     # OpenZFS
 options         TMPFS                   # tmpfs(5)
 options         NULLFS                  # nullfs(5) overlay
-options         UNIONFS                 # unionfs(5)
 options         FDESCFS                 # /dev/fd
 options         PROCFS                  # /proc (compat)
-options         LINPROCFS               # Linux /proc
-options         LINSYSFS                # Linux /sys
 
 # ============================================================
 # Network
@@ -48,9 +40,7 @@ options         LINSYSFS                # Linux /sys
 device          vtnet                   # VirtIO NIC
 device          em                      # Intel e1000 (QEMU default)
 device          re                      # Realtek
-device          if_bridge
-device          if_tap
-device          if_tun
+device          bridge
 
 # ============================================================
 # USB input (QEMU tablet/keyboard/mouse)
@@ -89,11 +79,6 @@ device          cpufreq
 options         RACCT                   # Resource accounting
 options         RCTL                    # Resource limits
 options         VIMAGE                  # Virtualized network stacks
-
-# ============================================================
-# nOS identity and desktop integration
-# ============================================================
-options         NOS                     # nOS kernel extensions (kern.nos.*)
 
 # ============================================================
 # Strip unnecessary debug overhead for release builds

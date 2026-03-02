@@ -31,8 +31,8 @@ fi
 if [ ! -f "${SRCDIR}/Makefile" ]; then
     log "Installing git..."
     pkg install -y git
-    log "Cloning FreeBSD 14.3-RELEASE source (~500 MB, one-time)..."
-    git clone --depth 1 --branch releng/14.3 \
+    log "Cloning FreeBSD 15.0 source (~500 MB, one-time)..."
+    git clone --depth 1 --branch releng/15.0 \
         https://git.FreeBSD.org/src.git "${SRCDIR}"
 fi
 
@@ -54,6 +54,7 @@ make -j"${JOBS}" buildkernel \
     KERNCONF=NOSKERNEL \
     TARGET=arm64 \
     TARGET_ARCH=aarch64 \
+    WITHOUT_MODULES=yes \
     2>&1 | tee /tmp/kernel-build.log
 
 # ---- Collect artifacts ----

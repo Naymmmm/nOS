@@ -36,7 +36,7 @@ if [ ! -d "${SRCDIR}/.git" ] && [ ! -f "${SRCDIR}/Makefile" ]; then
     log "Fetching FreeBSD 14.3-RELEASE source tree..."
     pkg install -y git
     git clone --depth 1 \
-        --branch releng/14.3 \
+        --branch releng/15.0 \
         https://git.FreeBSD.org/src.git \
         "${SRCDIR}"
 fi

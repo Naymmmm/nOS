@@ -65,9 +65,11 @@ cp "${OBJDIR}/kernel"           "${OUTDIR}/NOSKERNEL"
 cp "${OBJDIR}/kernel.symbols"   "${OUTDIR}/NOSKERNEL.symbols" 2>/dev/null || true
 cp /tmp/kernel-build.log        "${OUTDIR}/kernel-build.log"
 
-log "Build complete!"
-log "Artifacts at ${OUTDIR}/"
-log "Run on host after shutdown:  make kernel-extract"
-log "Shutting down in 5 s... (Ctrl-C to cancel)"
-sleep 5
-shutdown -p now
+log "Build complete. Artifacts at ${OUTDIR}/"
+
+# Shutdown unless running under automated SSH build
+if [ "${NOS_AUTO_BUILD:-0}" != "1" ]; then
+    log "Shutting down in 5 s... (Ctrl-C to cancel)"
+    sleep 5
+    shutdown -p now
+fi

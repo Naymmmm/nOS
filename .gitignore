@@ -1,3 +1,6 @@
+# Build state (SSH keys, markers)
+.nos-build/
+
 # Build artifacts
 compositor/build/
 dist/kernel/

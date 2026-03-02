@@ -1,0 +1,172 @@
+#!/bin/sh
+#
+# nos-update — nOS System Update Tool
+#
+# Creates a new ZFS Boot Environment, updates packages inside it,
+# seals it read-only, and sets it as active. Reboot to apply.
+# The old BE is preserved as a snapshot for rollback.
+#
+
+set -e
+
+PROG="$(basename "$0")"
+VERSION="1.0"
+DATE="$(date +%Y%m%d-%H%M%S)"
+CURRENT_POOL="zroot"
+ROOT_DS="${CURRENT_POOL}/ROOT"
+ACTIVE_BE="${ROOT_DS}/default"
+NEW_BE_NAME="nos-${DATE}"
+NEW_BE="${ROOT_DS}/${NEW_BE_NAME}"
+SNAP="${ACTIVE_BE}@pre-update-${DATE}"
+MOUNTPOINT="/mnt/nos-be-${DATE}"
+
+BLU='\033[1;34m'
+GRN='\033[0;32m'
+YLW='\033[1;33m'
+RED='\033[0;31m'
+RST='\033[0m'
+
+info()  { printf "${BLU}==> %s${RST}\n" "$*"; }
+ok()    { printf "${GRN}    ok: %s${RST}\n" "$*"; }
+warn()  { printf "${YLW}    warning: %s${RST}\n" "$*"; }
+fail()  { printf "${RED}    error: %s${RST}\n" "$*" >&2; exit 1; }
+
+usage() {
+    cat << EOF
+Usage: ${PROG} [OPTIONS]
+
+Options:
+  -h, --help      Show this help
+  -c, --check     Check for updates without installing
+  -y, --yes       Non-interactive (auto-yes)
+  --list-bes      List available boot environments
+
+nOS update tool v${VERSION}
+EOF
+}
+
+# ---------------------------------------------------------------------------
+check_root() {
+    [ "$(id -u)" = "0" ] || fail "Must be run as root (use sudo ${PROG})"
+}
+
+# ---------------------------------------------------------------------------
+check_zfs() {
+    zpool list "${CURRENT_POOL}" >/dev/null 2>&1 || \
+        fail "ZFS pool '${CURRENT_POOL}' not found."
+    zfs list "${ACTIVE_BE}" >/dev/null 2>&1 || \
+        fail "Active boot environment '${ACTIVE_BE}' not found."
+}
+
+# ---------------------------------------------------------------------------
+list_bes() {
+    info "Available boot environments:"
+    echo ""
+    zfs list -r -t filesystem,snapshot -o name,creation,used,refer \
+        "${ROOT_DS}" | head -30
+    echo ""
+}
+
+# ---------------------------------------------------------------------------
+check_updates() {
+    info "Checking for package updates..."
+    pkg version -l '<' 2>/dev/null && return 0
+    echo "  All packages are up to date."
+}
+
+# ---------------------------------------------------------------------------
+do_update() {
+    local auto_yes="${1:-no}"
+
+    check_zfs
+
+    info "Current boot environment : ${ACTIVE_BE}"
+    info "New boot environment     : ${NEW_BE}"
+    echo ""
+
+    if [ "${auto_yes}" != "yes" ]; then
+        printf "Proceed with update? [y/N] "
+        read -r ans
+        case "${ans}" in y|Y|yes) ;; *) echo "Aborted."; exit 0;; esac
+    fi
+
+    # 1. Snapshot the current BE
+    info "Snapshotting current environment..."
+    zfs snapshot "${SNAP}"
+    ok "Snapshot: ${SNAP}"
+
+    # 2. Clone into new BE
+    info "Cloning into new boot environment..."
+    zfs clone "${SNAP}" "${NEW_BE}"
+
+    # 3. Make the new BE temporarily writable and mount it
+    info "Mounting new environment at ${MOUNTPOINT}..."
+    mkdir -p "${MOUNTPOINT}"
+    zfs set readonly=off "${NEW_BE}"
+    mount -t zfs "${NEW_BE}" "${MOUNTPOINT}"
+
+    # Bind mount necessary pseudo-filesystems
+    mount -t devfs devfs "${MOUNTPOINT}/dev"
+    mount -t tmpfs tmpfs "${MOUNTPOINT}/tmp"
+
+    # 4. Update packages inside new BE
+    info "Updating packages..."
+    pkg -r "${MOUNTPOINT}" upgrade -y
+
+    # 5. Unmount and clean up
+    info "Unmounting..."
+    umount "${MOUNTPOINT}/tmp"
+    umount "${MOUNTPOINT}/dev"
+    umount "${MOUNTPOINT}"
+    rmdir "${MOUNTPOINT}"
+
+    # 6. Seal new BE as read-only
+    info "Sealing new environment as immutable..."
+    zfs set readonly=on "${NEW_BE}"
+    zfs set mountpoint=/ "${NEW_BE}"
+    zfs set canmount=noauto "${NEW_BE}"
+
+    # 7. Activate new BE
+    info "Setting new boot environment as active..."
+    zpool set bootfs="${NEW_BE}" "${CURRENT_POOL}"
+
+    echo ""
+    printf "${GRN}"
+    echo "============================================"
+    echo "  Update complete!"
+    echo "  New BE: ${NEW_BE_NAME}"
+    echo "  Rollback snapshot: ${SNAP}"
+    echo ""
+    echo "  Reboot to apply:  reboot"
+    echo "  Rollback (if needed):  nos-rollback"
+    echo "============================================"
+    printf "${RST}"
+}
+
+# ---------------------------------------------------------------------------
+main() {
+    check_root
+
+    AUTO_YES="no"
+    SUBCMD="update"
+
+    for arg in "$@"; do
+        case "${arg}" in
+            -h|--help)     usage; exit 0 ;;
+            -c|--check)    SUBCMD="check" ;;
+            -y|--yes)      AUTO_YES="yes" ;;
+            --list-bes)    SUBCMD="list" ;;
+            *) warn "Unknown option: ${arg}" ;;
+        esac
+    done
+
+    printf "${BLU}nOS Update Tool v${VERSION}${RST}\n\n"
+
+    case "${SUBCMD}" in
+        check)  check_updates ;;
+        list)   list_bes ;;
+        update) do_update "${AUTO_YES}" ;;
+    esac
+}
+
+main "$@"

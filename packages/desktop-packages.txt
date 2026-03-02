@@ -1,0 +1,88 @@
+# nOS Desktop Packages — Nosface Wayland DE
+
+# ---- Wayland core ----
+wayland
+wayland-protocols
+wayland-utils
+xorg-xwayland
+
+# ---- noscomp compositor build deps ----
+wlroots
+libinput
+pixman
+libxkbcommon
+mesa
+mesa-libgl
+egl-wayland
+
+# ---- Nosface shell runtime ----
+python3
+python-gobject
+gtk3
+gtk-layer-shell
+python-dbus
+
+# ---- Display manager (greetd) ----
+greetd
+greetd-gtkgreet
+
+# ---- Terminal ----
+alacritty
+
+# ---- File manager ----
+thunar
+thunar-archive-plugin
+gvfs
+udisks2
+
+# ---- Text editor ----
+gedit
+
+# ---- Network ----
+networkmanager
+network-manager-applet
+
+# ---- Audio (Pipewire stack) ----
+pipewire
+pipewire-pulse
+wireplumber
+pavucontrol
+
+# ---- Fonts ----
+inter-font
+nerd-fonts-jetbrainsmono
+ttf-font-awesome
+
+# ---- Icons & cursors ----
+papirus-icon-theme
+bibata-cursor-theme
+
+# ---- PolicyKit agent ----
+polkit-gnome
+
+# ---- XDG portal (Wayland) ----
+xdg-desktop-portal
+xdg-desktop-portal-wlr
+
+# ---- Screenshot (Wayland) ----
+grim
+slurp
+wl-clipboard
+
+# ---- Screen lock (Wayland) ----
+swaylock
+
+# ---- Image viewer ----
+eog
+
+# ---- PDF viewer ----
+evince
+
+# ---- Browser ----
+firefox
+
+# ---- Media player ----
+mpv
+
+# ---- ImageMagick (wallpaper generation) ----
+imagemagick

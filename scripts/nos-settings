@@ -1,0 +1,108 @@
+#!/bin/sh
+#
+# nos-settings — nOS System Settings CLI
+#
+# Provides a simple TUI for common system settings that would otherwise
+# require editing system files manually.
+#
+
+PROG="$(basename "$0")"
+
+check_dialog() {
+    command -v dialog >/dev/null 2>&1 || { echo "dialog not found."; exit 1; }
+}
+
+# ---------------------------------------------------------------------------
+menu_appearance() {
+    local choice
+    choice=$(dialog \
+        --backtitle "nOS Settings" \
+        --title "Appearance" \
+        --menu "\nAppearance settings:" \
+        14 52 5 \
+        "theme"      "Change GTK theme" \
+        "icons"      "Change icon theme" \
+        "wallpaper"  "Set wallpaper" \
+        "font"       "Change system font" \
+        "back"       "Back" \
+        3>&1 1>&2 2>&3) || return
+
+    case "${choice}" in
+        theme)     lxappearance & ;;
+        icons)     lxappearance & ;;
+        wallpaper) nitrogen & ;;
+        font)      lxappearance & ;;
+    esac
+}
+
+# ---------------------------------------------------------------------------
+menu_network() {
+    nm-connection-editor &
+}
+
+# ---------------------------------------------------------------------------
+menu_display() {
+    arandr &
+}
+
+# ---------------------------------------------------------------------------
+menu_sound() {
+    pavucontrol &
+}
+
+# ---------------------------------------------------------------------------
+menu_system() {
+    local choice
+    choice=$(dialog \
+        --backtitle "nOS Settings" \
+        --title "System" \
+        --menu "\nSystem settings:" \
+        14 52 5 \
+        "update"     "Check for updates" \
+        "bes"        "Manage boot environments" \
+        "hostname"   "Change hostname" \
+        "timezone"   "Change timezone" \
+        "back"       "Back" \
+        3>&1 1>&2 2>&3) || return
+
+    case "${choice}" in
+        update)   nos-update ;;
+        bes)      nos-rollback ;;
+        hostname)
+            NEW=$(dialog --inputbox "New hostname:" 8 46 "$(hostname)" 3>&1 1>&2 2>&3)
+            [ -n "${NEW}" ] && sudo hostname "${NEW}" && \
+                sudo sed -i '' "s/^hostname=.*/hostname=\"${NEW}\"/" /etc/rc.conf
+            ;;
+        timezone) sudo tzsetup ;;
+    esac
+}
+
+# ---------------------------------------------------------------------------
+main_menu() {
+    while true; do
+        choice=$(dialog \
+            --backtitle "nOS Settings" \
+            --title "nOS System Settings" \
+            --menu "\nWhat would you like to configure?" \
+            16 52 6 \
+            "appearance" "Appearance & Themes" \
+            "network"    "Network" \
+            "display"    "Display & Resolution" \
+            "sound"      "Sound & Audio" \
+            "system"     "System & Updates" \
+            "quit"       "Quit" \
+            3>&1 1>&2 2>&3) || break
+
+        case "${choice}" in
+            appearance) menu_appearance ;;
+            network)    menu_network ;;
+            display)    menu_display ;;
+            sound)      menu_sound ;;
+            system)     menu_system ;;
+            quit|"")    break ;;
+        esac
+    done
+}
+
+check_dialog
+main_menu

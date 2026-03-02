@@ -1,0 +1,10 @@
+# display-manager/greetd/config.toml — greetd daemon configuration for nOS
+
+[terminal]
+# TTY to use for the login screen
+vt = 1
+
+[default_session]
+# Use gtkgreet as the default greeter
+command = "gtkgreet -l -s /usr/share/nosface/display-manager/greetd/style.css"
+user = "greeter"

@@ -1,0 +1,67 @@
+/* nosface-bar/style.css — glassmorphism top bar */
+
+/* ---- Dark theme ---- */
+.theme-dark .nos-bar {
+    background: rgba(8, 8, 26, 0.80);
+    border-bottom: 1px solid rgba(100, 140, 255, 0.22);
+    box-shadow: 0 2px 24px rgba(77, 139, 255, 0.18);
+    color: #e2e8f0;
+}
+
+/* ---- Light theme ---- */
+.theme-light .nos-bar {
+    background: rgba(255, 255, 255, 0.78);
+    border-bottom: 1px solid rgba(77, 139, 255, 0.30);
+    box-shadow: 0 2px 16px rgba(37, 99, 235, 0.12);
+    color: #0f172a;
+}
+
+/* ---- Shared bar styles ---- */
+.nos-bar {
+    font-family: "SF Pro Display", "Inter", sans-serif;
+    font-size: 13px;
+    min-height: 32px;
+}
+
+/* Apple logo button */
+.apple-btn {
+    background: transparent;
+    border: none;
+    padding: 0 10px;
+    font-size: 16px;
+    color: inherit;
+    min-height: 32px;
+}
+.apple-btn:hover {
+    background: rgba(128, 128, 255, 0.12);
+    border-radius: 0;
+}
+
+/* App name */
+.app-name {
+    font-weight: 600;
+    font-size: 13px;
+    color: inherit;
+    padding: 0 4px;
+}
+
+/* Clock */
+.clock {
+    font-size: 13px;
+    color: inherit;
+    font-variant-numeric: tabular-nums;
+    padding: 0 8px;
+}
+
+/* Tray buttons */
+.tray-btn {
+    background: transparent;
+    border: none;
+    padding: 2px 4px;
+    border-radius: 6px;
+    min-height: 24px;
+    color: inherit;
+}
+.tray-btn:hover {
+    background: rgba(128, 128, 255, 0.15);
+}

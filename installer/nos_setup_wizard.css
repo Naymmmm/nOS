@@ -1,0 +1,103 @@
+/* nos_setup_wizard.css — first-run wizard styling */
+
+.wizard-window {
+    background: #08081a;
+    color: #e2e8f0;
+    font-family: "SF Pro Display", "Inter", sans-serif;
+}
+
+.wizard-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: #e2e8f0;
+    margin-bottom: 6px;
+}
+
+.wizard-desc {
+    font-size: 14px;
+    color: #94a3b8;
+    line-height: 1.6;
+}
+
+/* Theme buttons */
+.theme-btn {
+    background: rgba(18, 18, 52, 0.70);
+    border: 2px solid rgba(100, 140, 255, 0.25);
+    border-radius: 14px;
+    color: #e2e8f0;
+    font-size: 16px;
+    padding: 18px 32px;
+    transition: all 150ms ease;
+}
+.theme-btn:checked,
+.theme-btn:active {
+    background: rgba(77, 139, 255, 0.22);
+    border-color: #4d8bff;
+    box-shadow: 0 0 16px rgba(77, 139, 255, 0.40);
+    color: #fff;
+}
+
+/* Combo */
+.wizard-combo {
+    background: rgba(18, 18, 52, 0.55);
+    border: 1px solid rgba(100, 140, 255, 0.22);
+    border-radius: 10px;
+    color: #e2e8f0;
+    padding: 8px 14px;
+    min-width: 240px;
+    font-size: 14px;
+}
+
+/* Checkboxes */
+.wizard-check {
+    color: #e2e8f0;
+    font-size: 14px;
+    padding: 4px 0;
+}
+
+/* Footer */
+.wizard-footer {
+    background: rgba(18, 18, 52, 0.85);
+    border-top: 1px solid rgba(100, 140, 255, 0.18);
+    min-height: 56px;
+    padding: 8px 0;
+}
+
+/* Dots */
+.wizard-dot {
+    font-size: 20px;
+    color: rgba(100, 140, 255, 0.30);
+    transition: color 200ms ease;
+}
+.dot-active {
+    color: #4d8bff;
+    text-shadow: 0 0 8px rgba(77, 139, 255, 0.70);
+}
+
+/* Nav buttons */
+.wizard-nav-btn {
+    background: rgba(77, 139, 255, 0.10);
+    border: 1px solid rgba(100, 140, 255, 0.25);
+    border-radius: 10px;
+    color: #e2e8f0;
+    padding: 8px 20px;
+    font-size: 13px;
+}
+.wizard-nav-btn:hover {
+    background: rgba(77, 139, 255, 0.20);
+}
+
+.wizard-nav-btn-primary {
+    background: linear-gradient(135deg, #4d8bff 0%, #2563eb 100%);
+    border: none;
+    border-radius: 10px;
+    color: #fff;
+    padding: 8px 20px;
+    font-size: 13px;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(77, 139, 255, 0.40);
+}
+.wizard-nav-btn-primary:hover {
+    background: linear-gradient(135deg, #5d9bff 0%, #3573fb 100%);
+    box-shadow: 0 6px 20px rgba(77, 139, 255, 0.55);
+}

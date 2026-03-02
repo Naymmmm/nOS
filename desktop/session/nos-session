@@ -1,0 +1,65 @@
+#!/bin/sh
+# desktop/session/nos-session — Nosface Wayland session startup script
+
+set -e
+
+# ---- Environment ----
+export XDG_SESSION_TYPE=wayland
+export XDG_CURRENT_DESKTOP=Nosface
+export XDG_SESSION_DESKTOP=nosface
+
+# GTK
+export GDK_BACKEND=wayland
+export GTK_THEME=Nosface-Dark
+
+# Qt
+export QT_QPA_PLATFORM=wayland
+export QT_WAYLAND_DISABLE_WINDOWDECORATION=1
+export QT_AUTO_SCREEN_SCALE_FACTOR=1
+
+# Clutter / SDL
+export CLUTTER_BACKEND=wayland
+export SDL_VIDEODRIVER=wayland
+
+# Mozilla / Electron
+export MOZ_ENABLE_WAYLAND=1
+export ELECTRON_OZONE_PLATFORM_HINT=wayland
+
+# Java (AWT)
+export _JAVA_AWT_WM_NONREPARENTING=1
+
+# XDG runtime
+: "${XDG_RUNTIME_DIR:=/run/user/$(id -u)}"
+export XDG_RUNTIME_DIR
+
+# Theme selection (default dark; set NOS_THEME=light to switch)
+: "${NOS_THEME:=dark}"
+export NOS_THEME
+
+# Source colour vars
+NOS_DATA_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/nosface"
+THEME_DIR="$NOS_DATA_DIR/themes/$NOS_THEME"
+if [ -f "$THEME_DIR/colors.sh" ]; then
+    . "$THEME_DIR/colors.sh"
+else
+    _INSTALL_THEME="/usr/share/nosface/themes/$NOS_THEME/colors.sh"
+    [ -f "$_INSTALL_THEME" ] && . "$_INSTALL_THEME"
+fi
+
+# ---- dbus session ----
+if [ -z "$DBUS_SESSION_BUS_ADDRESS" ]; then
+    eval "$(dbus-launch --sh-syntax --exit-with-session)"
+fi
+
+# ---- Pipewire / audio ----
+pipewire &
+pipewire-pulse &
+wireplumber &
+
+# ---- Shell components ----
+nosface-bar     &
+nosface-dock    &
+nosface-notify  &
+
+# ---- Launch compositor (blocks until exit) ----
+exec noscomp

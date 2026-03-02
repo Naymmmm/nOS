@@ -1,0 +1,201 @@
+/* themes/dark/theme.css — GTK3 dark gel theme for Nosface */
+
+/* ---- Palette ---- */
+@define-color bg            #08081a;
+@define-color surface       rgba(18, 18, 52, 0.72);
+@define-color surface_solid #12143a;
+@define-color border        rgba(100, 140, 255, 0.22);
+@define-color border_hi     rgba(140, 180, 255, 0.50);
+@define-color primary       #4d8bff;
+@define-color accent        #06b6d4;
+@define-color glow          rgba(77, 139, 255, 0.45);
+@define-color text          #e2e8f0;
+@define-color text_dim      #94a3b8;
+@define-color error         #f87171;
+@define-color success       #34d399;
+@define-color warning       #fbbf24;
+
+/* ---- Window / Base ---- */
+window,
+.background {
+    background-color: @bg;
+    color: @text;
+}
+
+/* ---- Headerbar ---- */
+headerbar {
+    background: rgba(18, 18, 52, 0.80);
+    border-bottom: 1px solid @border;
+    box-shadow: 0 1px 8px rgba(77, 139, 255, 0.18);
+    color: @text;
+    padding: 0 8px;
+    min-height: 36px;
+    border-radius: 12px 12px 0 0;
+}
+headerbar .title {
+    font-weight: 600;
+    font-size: 13px;
+    color: @text;
+}
+/* macOS traffic lights order: close min max */
+headerbar .titlebuttons button {
+    border-radius: 50%;
+    min-width:  13px;
+    min-height: 13px;
+    padding: 0;
+    border: none;
+    margin: 0 3px;
+}
+.titlebuttons button.close  { background: #ff5f57; }
+.titlebuttons button.minimize { background: #febc2e; }
+.titlebuttons button.maximize { background: #28c840; }
+.titlebuttons button:hover { filter: brightness(1.15); }
+
+/* ---- Buttons ---- */
+button {
+    background: rgba(77, 139, 255, 0.14);
+    border: 1px solid @border;
+    border-radius: 8px;
+    color: @text;
+    padding: 6px 14px;
+    transition: all 150ms ease;
+}
+button:hover {
+    background: rgba(77, 139, 255, 0.25);
+    border-color: @border_hi;
+    box-shadow: 0 0 8px @glow;
+}
+button:active {
+    background: rgba(77, 139, 255, 0.35);
+}
+button.suggested-action {
+    background: @primary;
+    border-color: @primary;
+    color: #fff;
+    font-weight: 600;
+}
+
+/* ---- Entry / Text input ---- */
+entry {
+    background: rgba(18, 18, 52, 0.60);
+    border: 1px solid @border;
+    border-radius: 8px;
+    color: @text;
+    padding: 6px 12px;
+    caret-color: @primary;
+}
+entry:focus {
+    border-color: @primary;
+    box-shadow: 0 0 0 2px rgba(77, 139, 255, 0.25);
+}
+
+/* ---- Menus ---- */
+menu, .menu, menubar menu {
+    background: rgba(18, 18, 52, 0.92);
+    border: 1px solid @border;
+    border-radius: 10px;
+    padding: 4px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.50);
+    color: @text;
+}
+menuitem {
+    padding: 4px 12px;
+    border-radius: 6px;
+}
+menuitem:hover {
+    background: rgba(77, 139, 255, 0.18);
+    color: @text;
+}
+
+/* ---- Scrollbar ---- */
+scrollbar slider {
+    background: rgba(100, 140, 255, 0.35);
+    border-radius: 4px;
+    min-width: 4px;
+    min-height: 4px;
+}
+scrollbar slider:hover {
+    background: @primary;
+}
+scrollbar trough {
+    background: transparent;
+}
+
+/* ---- Tooltip ---- */
+tooltip {
+    background: rgba(18, 18, 52, 0.92);
+    border: 1px solid @border;
+    border-radius: 8px;
+    color: @text;
+    padding: 4px 10px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+}
+
+/* ---- Notebook / Tabs ---- */
+notebook tab {
+    background: transparent;
+    border: none;
+    color: @text_dim;
+    padding: 6px 16px;
+    border-radius: 8px 8px 0 0;
+}
+notebook tab:checked {
+    color: @text;
+    background: rgba(77, 139, 255, 0.12);
+    border-bottom: 2px solid @primary;
+}
+
+/* ---- Sidebar / ListBox ---- */
+list, listbox {
+    background: transparent;
+}
+listboxrow {
+    background: transparent;
+    border-radius: 8px;
+    padding: 4px 8px;
+}
+listboxrow:selected {
+    background: rgba(77, 139, 255, 0.18);
+    color: @text;
+}
+listboxrow:hover {
+    background: rgba(77, 139, 255, 0.10);
+}
+
+/* ---- Checkboxes / Radios ---- */
+checkbutton check,
+radiobutton radio {
+    background: rgba(18, 18, 52, 0.60);
+    border: 1px solid @border;
+    border-radius: 4px;
+    color: @text;
+}
+checkbutton check:checked,
+radiobutton radio:checked {
+    background: @primary;
+    border-color: @primary;
+    color: #fff;
+}
+
+/* ---- Progress / Scale ---- */
+progressbar progress {
+    background: @primary;
+    border-radius: 4px;
+}
+progressbar trough {
+    background: rgba(100, 140, 255, 0.15);
+    border-radius: 4px;
+    min-height: 6px;
+}
+scale slider {
+    background: @primary;
+    border-radius: 50%;
+    min-width: 16px;
+    min-height: 16px;
+    box-shadow: 0 0 6px @glow;
+}
+scale trough {
+    background: rgba(100, 140, 255, 0.20);
+    border-radius: 4px;
+    min-height: 4px;
+}

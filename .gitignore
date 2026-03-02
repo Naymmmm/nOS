@@ -1,0 +1,23 @@
+# Build artifacts
+compositor/build/
+dist/kernel/
+dist/vm/*.qcow2
+dist/vm/*.qcow2.xz
+dist/vm/*.fd
+build/linux-*/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db

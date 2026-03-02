@@ -1,0 +1,24 @@
+# nOS Base Packages
+# Installed into the root filesystem before desktop packages
+
+bash
+zsh
+sudo
+curl
+wget
+git
+vim
+nano
+htop
+tmux
+python3
+ca_root_nss
+dialog
+rsync
+zip
+unzip
+xz
+p7zip
+less
+gnupg
+openssh

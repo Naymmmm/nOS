@@ -1,0 +1,100 @@
+#
+# NOSKERNEL -- nOS custom kernel configuration
+# Based on FreeBSD GENERIC with additions for desktop use and QEMU.
+#
+
+include         GENERIC
+ident           NOSKERNEL
+
+# ============================================================
+# QEMU / VirtIO guest support
+# ============================================================
+device          virtio                  # VirtIO core
+device          virtio_pci              # VirtIO PCI transport
+device          virtio_blk              # VirtIO block device
+device          virtio_scsi             # VirtIO SCSI
+device          virtio_net              # VirtIO network (vtnet)
+device          virtio_balloon          # Memory balloon
+device          virtio_random           # Entropy source
+device          virtio_console          # Paravirtual console
+
+# NVMe storage (modern QEMU -drive if=nvme)
+device          nvme
+device          nvd
+
+# QEMU display / framebuffer
+device          vt                      # Virtual terminal (vt(4))
+device          vt_vga
+device          vt_efifb
+
+# QEMU virtio-gpu / QXL
+device          drm
+
+# ============================================================
+# Filesystem support
+# ============================================================
+options         ZFS                     # OpenZFS
+options         TMPFS                   # tmpfs(5)
+options         NULLFS                  # nullfs(5) overlay
+options         UNIONFS                 # unionfs(5)
+options         FDESCFS                 # /dev/fd
+options         PROCFS                  # /proc (compat)
+options         LINPROCFS               # Linux /proc
+options         LINSYSFS                # Linux /sys
+
+# ============================================================
+# Network
+# ============================================================
+device          vtnet                   # VirtIO NIC
+device          em                      # Intel e1000 (QEMU default)
+device          re                      # Realtek
+device          if_bridge
+device          if_tap
+device          if_tun
+
+# ============================================================
+# USB input (QEMU tablet/keyboard/mouse)
+# ============================================================
+device          usb
+device          xhci
+device          ehci
+device          ohci
+device          uhci
+device          ukbd
+device          ums
+device          uhid
+
+# ============================================================
+# Audio
+# ============================================================
+device          sound
+device          snd_hda                 # Intel HDA / QEMU audio
+
+# ============================================================
+# Security
+# ============================================================
+options         MAC                     # TrustedBSD MAC framework
+options         AUDIT                   # Security event auditing
+options         CAPABILITIES            # Capsicum capability mode
+
+# ============================================================
+# Power / ACPI
+# ============================================================
+device          acpi
+device          cpufreq
+
+# ============================================================
+# Misc
+# ============================================================
+options         RACCT                   # Resource accounting
+options         RCTL                    # Resource limits
+options         VIMAGE                  # Virtualized network stacks
+
+# ============================================================
+# Strip unnecessary debug overhead for release builds
+# ============================================================
+nooptions       INVARIANTS
+nooptions       INVARIANT_SUPPORT
+nooptions       WITNESS
+nooptions       WITNESS_SKIPSPIN
+nooptions       DIAGNOSTIC

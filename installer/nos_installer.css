@@ -1,0 +1,175 @@
+/* nos_installer.css — gel installer styling */
+
+/* ---- Window ---- */
+.installer-window {
+    background: #08081a;
+    color: #e2e8f0;
+    font-family: "SF Pro Display", "Inter", sans-serif;
+}
+
+/* ---- Header ---- */
+.installer-header {
+    background: rgba(18, 18, 52, 0.90);
+    border-bottom: 1px solid rgba(100, 140, 255, 0.22);
+    min-height: 52px;
+    padding: 0 16px;
+}
+
+.installer-header-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #e2e8f0;
+}
+
+/* ---- Step dots ---- */
+.step-dot {
+    background: rgba(100, 140, 255, 0.18);
+    border: 1px solid rgba(100, 140, 255, 0.30);
+    border-radius: 50%;
+    min-width: 26px;
+    min-height: 26px;
+    font-size: 11px;
+    color: #94a3b8;
+}
+
+.step-active {
+    background: #4d8bff;
+    border-color: #4d8bff;
+    color: #ffffff;
+    box-shadow: 0 0 10px rgba(77, 139, 255, 0.55);
+}
+
+.step-done {
+    background: rgba(6, 182, 212, 0.25);
+    border-color: #06b6d4;
+    color: #06b6d4;
+}
+
+/* ---- Pages ---- */
+.page-title {
+    font-size: 26px;
+    font-weight: 700;
+    color: #e2e8f0;
+    margin-bottom: 8px;
+}
+
+.page-sub {
+    font-size: 14px;
+    color: #94a3b8;
+    line-height: 1.6;
+}
+
+/* ---- Logo ---- */
+.installer-logo {
+    margin-bottom: 8px;
+}
+
+/* ---- License text ---- */
+.license-text {
+    background: rgba(18, 18, 52, 0.60);
+    color: #94a3b8;
+    font-size: 12px;
+    font-family: "JetBrains Mono", monospace;
+    border: 1px solid rgba(100, 140, 255, 0.18);
+    border-radius: 8px;
+    padding: 12px;
+}
+
+/* ---- Disk list ---- */
+.disk-list {
+    background: rgba(18, 18, 52, 0.60);
+    border: 1px solid rgba(100, 140, 255, 0.18);
+    border-radius: 10px;
+    color: #e2e8f0;
+}
+
+/* ---- Entries ---- */
+entry {
+    background: rgba(18, 18, 52, 0.55);
+    border: 1px solid rgba(100, 140, 255, 0.22);
+    border-radius: 8px;
+    color: #e2e8f0;
+    padding: 8px 12px;
+    caret-color: #4d8bff;
+}
+entry:focus {
+    border-color: #4d8bff;
+    box-shadow: 0 0 0 2px rgba(77, 139, 255, 0.22);
+}
+
+/* ---- Checkbuttons ---- */
+checkbutton {
+    color: #e2e8f0;
+    font-size: 13px;
+    padding: 4px 0;
+}
+
+/* ---- Combos ---- */
+comboboxtext, combobox {
+    background: rgba(18, 18, 52, 0.55);
+    border: 1px solid rgba(100, 140, 255, 0.22);
+    border-radius: 8px;
+    color: #e2e8f0;
+    padding: 6px 12px;
+    min-width: 200px;
+}
+
+/* ---- Progress ---- */
+.install-progress {
+    min-height: 20px;
+}
+.install-progress progress {
+    background: linear-gradient(90deg, #4d8bff, #06b6d4);
+    border-radius: 8px;
+}
+.install-progress trough {
+    background: rgba(100, 140, 255, 0.15);
+    border-radius: 8px;
+    min-height: 20px;
+}
+
+/* ---- Log view ---- */
+.log-view {
+    background: rgba(4, 4, 12, 0.80);
+    color: #22d3ee;
+    font-family: "JetBrains Mono", "Courier New", monospace;
+    font-size: 12px;
+    border: 1px solid rgba(100, 140, 255, 0.18);
+    border-radius: 8px;
+    padding: 8px;
+}
+
+/* ---- Footer ---- */
+.installer-footer {
+    background: rgba(18, 18, 52, 0.90);
+    border-top: 1px solid rgba(100, 140, 255, 0.18);
+    min-height: 56px;
+    padding: 8px 0;
+}
+
+.nav-btn {
+    background: rgba(77, 139, 255, 0.12);
+    border: 1px solid rgba(100, 140, 255, 0.28);
+    border-radius: 10px;
+    color: #e2e8f0;
+    padding: 8px 22px;
+    font-size: 13px;
+}
+.nav-btn:hover {
+    background: rgba(77, 139, 255, 0.22);
+}
+
+.nav-btn-primary {
+    background: linear-gradient(135deg, #4d8bff 0%, #2563eb 100%);
+    border: none;
+    border-radius: 10px;
+    color: #fff;
+    padding: 8px 22px;
+    font-size: 13px;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(77, 139, 255, 0.40);
+}
+.nav-btn-primary:hover {
+    background: linear-gradient(135deg, #5d9bff 0%, #3573fb 100%);
+    box-shadow: 0 6px 18px rgba(77, 139, 255, 0.55);
+}

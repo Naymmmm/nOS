@@ -1,0 +1,77 @@
+/* nosface-dock/style.css */
+
+/* ---- Dark theme ---- */
+.theme-dark .dock-outer {
+    background: rgba(18, 18, 52, 0.72);
+    border: 1px solid rgba(100, 140, 255, 0.22);
+    border-radius: 20px;
+    box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.45),
+        0 0 0 1px rgba(100, 140, 255, 0.10),
+        inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+/* ---- Light theme ---- */
+.theme-light .dock-outer {
+    background: rgba(255, 255, 255, 0.78);
+    border: 1px solid rgba(77, 139, 255, 0.30);
+    border-radius: 20px;
+    box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.15),
+        0 0 0 1px rgba(77, 139, 255, 0.10),
+        inset 0 1px 0 rgba(255, 255, 255, 0.90);
+}
+
+/* ---- Shared dock styles ---- */
+.dock-outer {
+    padding: 8px 16px;
+}
+
+.dock-row {
+    padding: 4px 0;
+}
+
+.dock-icon-box {
+    border-radius: 12px;
+    padding: 4px;
+    transition: all 150ms ease;
+}
+
+.dock-icon-box:hover {
+    background: rgba(77, 139, 255, 0.12);
+}
+
+.dock-icon {
+    transition: all 120ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Bounce animation */
+@keyframes dock-bounce {
+    0%   { margin-bottom: 0px; }
+    30%  { margin-bottom: 18px; }
+    60%  { margin-bottom: 0px; }
+    80%  { margin-bottom: 8px; }
+    100% { margin-bottom: 0px; }
+}
+
+.bounce {
+    animation: dock-bounce 400ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Running app dot */
+.dock-dot {
+    font-size: 8px;
+    color: #4d8bff;
+    margin-top: -4px;
+}
+
+/* Tooltip */
+.dock-tooltip {
+    font-size: 11px;
+    font-family: "SF Pro Display", "Inter", sans-serif;
+    background: rgba(0, 0, 0, 0.65);
+    color: #fff;
+    border-radius: 6px;
+    padding: 2px 8px;
+    margin-top: 4px;
+}

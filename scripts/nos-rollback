@@ -1,0 +1,130 @@
+#!/bin/sh
+#
+# nos-rollback — nOS Boot Environment Rollback Tool
+#
+# Lists available boot environments and snapshots, then activates
+# a selected one. Reboot to apply.
+#
+
+set -e
+
+PROG="$(basename "$0")"
+POOL="zroot"
+ROOT_DS="${POOL}/ROOT"
+
+BLU='\033[1;34m'
+GRN='\033[0;32m'
+YLW='\033[1;33m'
+RED='\033[0;31m'
+RST='\033[0m'
+
+info() { printf "${BLU}==> %s${RST}\n" "$*"; }
+ok()   { printf "${GRN}    ok: %s${RST}\n" "$*"; }
+fail() { printf "${RED}    error: %s${RST}\n" "$*" >&2; exit 1; }
+
+usage() {
+    cat << EOF
+Usage: ${PROG} [BOOT_ENVIRONMENT]
+
+Without arguments, lists available boot environments interactively.
+With a BE name argument, activates that boot environment.
+
+Examples:
+  ${PROG}                        # interactive selection
+  ${PROG} nos-20250301-120000    # activate specific BE
+EOF
+}
+
+check_root() {
+    [ "$(id -u)" = "0" ] || fail "Must be run as root (use sudo ${PROG})"
+}
+
+list_environments() {
+    echo ""
+    echo "  Available boot environments:"
+    echo "  ─────────────────────────────────────────────────────────────"
+    printf "  %-40s  %-20s  %s\n" "NAME" "CREATED" "USED"
+    echo "  ─────────────────────────────────────────────────────────────"
+    zfs list -r -H -t filesystem -o name,creation,used "${ROOT_DS}" \
+        | while IFS='	' read -r name creation used; do
+            short="${name#${ROOT_DS}/}"
+            current=""
+            active_be=$(zpool get -H -o value bootfs "${POOL}" 2>/dev/null || true)
+            [ "${name}" = "${active_be}" ] && current=" (active)"
+            printf "  %-40s  %-20s  %s%s\n" "${short}" "${creation}" "${used}" "${current}"
+        done
+    echo "  ─────────────────────────────────────────────────────────────"
+    echo ""
+}
+
+activate_be() {
+    local be_short="$1"
+    local be_full=""
+
+    # Accept short name (e.g. "nos-20250301-120000") or full DS name
+    if echo "${be_short}" | grep -q "^${ROOT_DS}/"; then
+        be_full="${be_short}"
+    else
+        be_full="${ROOT_DS}/${be_short}"
+    fi
+
+    zfs list "${be_full}" >/dev/null 2>&1 || \
+        fail "Boot environment not found: ${be_full}"
+
+    local current_active
+    current_active=$(zpool get -H -o value bootfs "${POOL}" 2>/dev/null || true)
+
+    if [ "${be_full}" = "${current_active}" ]; then
+        fail "That boot environment is already active."
+    fi
+
+    info "Activating boot environment: ${be_full}"
+
+    # Ensure correct mountpoint and canmount settings
+    zfs set mountpoint=/ "${be_full}"
+    zfs set canmount=noauto "${be_full}"
+    zfs set readonly=on "${be_full}" 2>/dev/null || true
+
+    # Set as active
+    zpool set bootfs="${be_full}" "${POOL}"
+
+    ok "Boot environment activated: ${be_full}"
+    echo ""
+    printf "${GRN}"
+    echo "  Reboot to switch to the selected environment:"
+    echo "    reboot"
+    echo ""
+    echo "  To undo this change, run nos-rollback again and select"
+    echo "  the previous environment before rebooting."
+    printf "${RST}"
+}
+
+interactive_select() {
+    list_environments
+
+    printf "  Enter boot environment name (or 'q' to quit): "
+    read -r choice
+
+    case "${choice}" in
+        q|Q|quit|exit) echo "Aborted."; exit 0 ;;
+        "") fail "No boot environment selected." ;;
+        *) activate_be "${choice}" ;;
+    esac
+}
+
+main() {
+    [ "$1" = "-h" ] || [ "$1" = "--help" ] && { usage; exit 0; }
+
+    check_root
+
+    printf "${BLU}nOS Rollback Tool${RST}\n"
+    echo ""
+
+    if [ -n "$1" ]; then
+        activate_be "$1"
+    else
+        interactive_select
+    fi
+}
+
+main "$@"

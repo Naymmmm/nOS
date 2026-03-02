@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 # boot-nos.sh — Set up and launch the nOS desktop VM.
 #
 # First run: installs NOSKERNEL + nosface desktop packages, then reboots into
@@ -18,7 +18,6 @@ SSH_KEY="${BUILDDIR}/nos-build-key"
 KEYMARK="${BUILDDIR}/.ssh-injected"
 DESKTOP_MARK="${BUILDDIR}/.desktop-installed"
 SSH_PORT="${SSH_PORT:-2222}"
-VNC_DISPLAY="${VNC_DISPLAY:-1}"
 HTTP_PORT="${HTTP_PORT:-8080}"
 
 RED='\033[1;31m'; GREEN='\033[1;32m'; CYAN='\033[1;36m'; YELLOW='\033[1;33m'; NC='\033[0m'
@@ -80,21 +79,25 @@ qemu-system-aarch64 \
     -m 4G \
     -drive if=pflash,format=raw,file="${EFI}",readonly=on \
     -drive if=pflash,format=raw,file="${EFIVARS}" \
-    -drive if=virtio,file="${DISK}",format=qcow2 \
-    -netdev "user,id=net0,hostfwd=tcp::${SSH_PORT}-:22" \
-    -device virtio-net-pci,netdev=net0 \
-    -device virtio-gpu-pci \
-    -display "vnc=0.0.0.0:${VNC_DISPLAY}" \
-    -usb -device usb-tablet \
+    -drive if=none,id=disk0,file="${DISK}",format=qcow2 \
+    -device virtio-blk-pci,drive=disk0,bootindex=0 \
+    -netdev "user,id=net0,hostfwd=tcp::${SSH_PORT}-:22,hostfwd=tcp::5900-:5900" \
+    -device virtio-net-pci,netdev=net0,romfile=,bootindex=99 \
+    -device qemu-xhci -device usb-tablet \
     -serial null \
     -monitor none \
-    2>/dev/null &
+    -display none \
+    2>"${BUILDDIR}/qemu-desktop.log" &
 QEMU_PID=$!
+sleep 1
+if ! kill -0 "${QEMU_PID}" 2>/dev/null; then
+    die "QEMU failed to start: $(cat "${BUILDDIR}/qemu-desktop.log")"
+fi
 
 # ── Wait for SSH ───────────────────────────────────────────────────────────────
 log "Waiting for VM to boot..."
 TRIES=0
-until ssh "${SSH_OPTS[@]}" root@localhost true 2>/dev/null; do
+until timeout 12 ssh "${SSH_OPTS[@]}" root@localhost true 2>/dev/null; do
     [ "${TRIES}" -gt 150 ] && die "VM SSH timeout"
     [ $((TRIES % 15)) -eq 0 ] && printf " [${TRIES}s]\n" || printf "."
     TRIES=$((TRIES + 1))
@@ -120,7 +123,7 @@ if [ ! -f "${DESKTOP_MARK}" ]; then
     # Wait for VM to come back up after reboot
     log "Waiting for reboot..."
     TRIES=0
-    until ssh "${SSH_OPTS[@]}" root@localhost true 2>/dev/null; do
+    until timeout 12 ssh "${SSH_OPTS[@]}" root@localhost true 2>/dev/null; do
         [ "${TRIES}" -gt 120 ] && die "Reboot timeout"
         TRIES=$((TRIES + 1))
         sleep 3
@@ -132,16 +135,15 @@ if [ ! -f "${DESKTOP_MARK}" ]; then
 fi
 
 # ── Done ───────────────────────────────────────────────────────────────────────
-VNC_TCP=$((5900 + VNC_DISPLAY))
 printf "\n"
 printf "${GREEN}╔══════════════════════════════════════════╗${NC}\n"
 printf "${GREEN}║         nOS Desktop is running           ║${NC}\n"
 printf "${GREEN}╠══════════════════════════════════════════╣${NC}\n"
-printf "${GREEN}║  VNC:  localhost:%-5d                   ║${NC}\n" "${VNC_TCP}"
+printf "${GREEN}║  VNC:  localhost:5900  (wayvnc)          ║${NC}\n"
 printf "${GREEN}║  SSH:  ssh -p %-5d root@localhost       ║${NC}\n" "${SSH_PORT}"
 printf "${GREEN}╚══════════════════════════════════════════╝${NC}\n"
 printf "\n"
-printf "Connect with any VNC client. Press Ctrl-C to stop the VM.\n\n"
+printf "Connect with any VNC client to localhost:5900. Ctrl-C stops the VM.\n\n"
 
 # Keep script alive (VNC session continues until user kills it)
 wait "${QEMU_PID}"

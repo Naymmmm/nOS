@@ -41,6 +41,8 @@ rm -f "${SERIAL_SOCK}"
 KVM_FLAGS=(-cpu cortex-a72)
 [ -w /dev/kvm ] && KVM_FLAGS=(-enable-kvm -cpu host)
 
+# Boot WITHOUT network so UEFI skips PXE and goes straight to EFI\BOOT\BOOTAA64.EFI
+# Network is added back after SSH key is injected (via a second boot for verification)
 qemu-system-aarch64 \
     -machine virt,gic-version=3 \
     "${KVM_FLAGS[@]}" \
@@ -48,13 +50,11 @@ qemu-system-aarch64 \
     -drive if=pflash,format=raw,file="${EFI}",readonly=on \
     -drive if=pflash,format=raw,file="${EFIVARS}" \
     -drive if=virtio,file="${DISK}",format=qcow2 \
-    -netdev "user,id=net0,hostfwd=tcp::${SSH_PORT}-:22" \
-    -device virtio-net-pci,netdev=net0 \
     -chardev "socket,id=serial0,path=${SERIAL_SOCK},server=on,wait=off" \
     -serial chardev:serial0 \
     -monitor none \
     -display none \
-    2>/dev/null &
+    2>"${BUILDDIR}/qemu-setup.log" &
 QEMU_PID=$!
 
 cleanup() { kill "${QEMU_PID}" 2>/dev/null || true; rm -f "${SERIAL_SOCK}"; }
@@ -96,7 +96,7 @@ def send(cmd):
     time.sleep(0.3)
 
 print("  waiting for login prompt...", flush=True)
-read_until("login:")
+read_until("login:", timeout=180)
 send("root")
 
 print("  logged in, configuring SSH...", flush=True)
@@ -120,20 +120,40 @@ read_until("NOS_SETUP_DONE")
 print("  SSH configured!", flush=True)
 PYEOF
 
-# ── Verify SSH works ──────────────────────────────────────────────────────────
-log "Verifying SSH access..."
+# ── Shutdown no-network VM ────────────────────────────────────────────────────
+log "Shutting down setup VM..."
+wait "${QEMU_PID}" 2>/dev/null || true
+sleep 2
+
+# ── Boot WITH network to verify SSH ──────────────────────────────────────────
+log "Rebooting with network to verify SSH..."
 SSH_OPTS=(-i "${SSH_KEY}" -p "${SSH_PORT}" -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=ERROR -o ConnectTimeout=10)
 
-for i in $(seq 1 20); do
+qemu-system-aarch64 \
+    -machine virt,gic-version=3 \
+    "${KVM_FLAGS[@]}" \
+    -smp 4 -m 2G \
+    -drive if=pflash,format=raw,file="${EFI}",readonly=on \
+    -drive if=pflash,format=raw,file="${EFIVARS}" \
+    -drive if=none,id=disk0,file="${DISK}",format=qcow2 \
+    -device virtio-blk-pci,drive=disk0,bootindex=0 \
+    -netdev "user,id=net0,hostfwd=tcp::${SSH_PORT}-:22" \
+    -device virtio-net-pci,netdev=net0,romfile=,bootindex=99 \
+    -serial null -monitor none -display none \
+    2>>"${BUILDDIR}/qemu-setup.log" &
+QEMU_PID=$!
+
+for i in $(seq 1 60); do
     if ssh "${SSH_OPTS[@]}" root@localhost true 2>/dev/null; then
-        ok "SSH works"
+        ok "SSH verified"
         break
     fi
     sleep 3
-    [ "${i}" -eq 20 ] && die "SSH verification failed"
+    [ "${i}" -eq 60 ] && die "SSH verification timed out"
+    printf "."
 done
+printf "\n"
 
-# ── Shutdown cleanly ──────────────────────────────────────────────────────────
 ssh "${SSH_OPTS[@]}" root@localhost "shutdown -p now" 2>/dev/null || true
 wait "${QEMU_PID}" 2>/dev/null || true
 trap - EXIT INT TERM

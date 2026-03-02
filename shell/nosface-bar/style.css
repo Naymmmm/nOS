@@ -49,7 +49,7 @@
 .clock {
     font-size: 13px;
     color: inherit;
-    font-variant-numeric: tabular-nums;
+    /* font-variant-numeric unsupported in GTK3 CSS parser */
     padding: 0 8px;
 }
 

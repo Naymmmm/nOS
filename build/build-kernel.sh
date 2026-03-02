@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 # build-kernel.sh — Fully automated nOS FreeBSD 15.0 kernel build.
 #
 # First run:  sh build/setup-build-vm.sh   (one-time SSH setup, needs sudo)
@@ -93,9 +93,10 @@ qemu-system-aarch64 \
     -nographic \
     -drive if=pflash,format=raw,file="${EFI}",readonly=on \
     -drive if=pflash,format=raw,file="${EFIVARS}" \
-    -drive if=virtio,file="${DISK}",format=qcow2 \
+    -drive if=none,id=disk0,file="${DISK}",format=qcow2 \
+    -device virtio-blk-pci,drive=disk0,bootindex=0 \
     -netdev "user,id=net0,hostfwd=tcp::${SSH_PORT}-:22" \
-    -device virtio-net-pci,netdev=net0 \
+    -device virtio-net-pci,netdev=net0,bootindex=99 \
     -serial null \
     -monitor none \
     -display none \

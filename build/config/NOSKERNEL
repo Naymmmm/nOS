@@ -91,6 +91,11 @@ options         RCTL                    # Resource limits
 options         VIMAGE                  # Virtualized network stacks
 
 # ============================================================
+# nOS identity and desktop integration
+# ============================================================
+options         NOS                     # nOS kernel extensions (kern.nos.*)
+
+# ============================================================
 # Strip unnecessary debug overhead for release builds
 # ============================================================
 nooptions       INVARIANTS

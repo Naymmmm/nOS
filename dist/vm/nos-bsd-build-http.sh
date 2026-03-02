@@ -38,7 +38,14 @@ fi
 
 # ---- Install kernel config ----
 log "Installing NOSKERNEL config..."
+mkdir -p "${SRCDIR}/sys/arm64/conf"
 cp /tmp/NOSKERNEL "${SRCDIR}/sys/arm64/conf/NOSKERNEL"
+
+# ---- Apply nOS kernel patches ----
+log "Applying nOS kernel patches..."
+fetch -q -o /tmp/nos-patches.sh "http://${HOST}:${PORT}/build/patches/nos-patches.sh" \
+    && sh /tmp/nos-patches.sh "${SRCDIR}" "http://${HOST}:${PORT}" \
+    || log "WARNING: patches failed, building stock kernel"
 
 # ---- Build ----
 log "Building NOSKERNEL with ${JOBS} jobs..."

@@ -1,35 +1,41 @@
-/* themes/light/theme.css — GTK3 light frosted theme for Nosface */
+/* themes/light/theme.css — macOS-accurate light system theme */
 
-/* ---- Palette ---- */
-@define-color bg            #f0f4ff;
-@define-color surface       rgba(255, 255, 255, 0.75);
-@define-color surface_solid #ffffff;
-@define-color border        rgba(77, 139, 255, 0.30);
-@define-color border_hi     rgba(77, 139, 255, 0.60);
-@define-color primary       #2563eb;
-@define-color accent        #0891b2;
-@define-color glow          rgba(37, 99, 235, 0.30);
-@define-color text          #0f172a;
-@define-color text_dim      #64748b;
-@define-color error         #dc2626;
-@define-color success       #16a34a;
-@define-color warning       #d97706;
+/* ─── macOS palette ─────────────────────────────────────────────────────── */
+@define-color bg              #F2F2F7;
+@define-color surface         #FFFFFF;
+@define-color surface2        #F2F2F7;
+@define-color separator       #E5E5EA;
+@define-color fill            rgba(0, 0, 0, 0.05);
+@define-color fill2           rgba(0, 0, 0, 0.08);
+@define-color primary         #007AFF;
+@define-color primary_hover   #0071EB;
+@define-color destructive     #FF3B30;
+@define-color success         #34C759;
+@define-color warning         #FF9F0A;
+@define-color text            #1D1D1F;
+@define-color text_secondary  #3C3C43;
+@define-color text_tertiary   #86868B;
+@define-color text_disabled   #C7C7CC;
 
-/* ---- Window / Base ---- */
-window,
-.background {
+/* Traffic lights */
+@define-color tl_close        #FF5F57;
+@define-color tl_minimize     #FFBD2E;
+@define-color tl_maximize     #28C840;
+
+/* ─── Window base ───────────────────────────────────────────────────────── */
+window, .background {
     background-color: @bg;
     color: @text;
 }
 
-/* ---- Headerbar ---- */
+/* ─── Header bar ────────────────────────────────────────────────────────── */
 headerbar {
-    background: rgba(255, 255, 255, 0.80);
-    border-bottom: 1px solid @border;
-    box-shadow: 0 1px 8px rgba(37, 99, 235, 0.10);
+    background: @surface;
+    border-bottom: 1px solid @separator;
+    box-shadow: none;
     color: @text;
-    padding: 0 8px;
-    min-height: 36px;
+    padding: 0 10px;
+    min-height: 38px;
     border-radius: 12px 12px 0 0;
 }
 headerbar .title {
@@ -37,9 +43,11 @@ headerbar .title {
     font-size: 13px;
     color: @text;
 }
-.titlebuttons button.close    { background: #ff5f57; }
-.titlebuttons button.minimize { background: #febc2e; }
-.titlebuttons button.maximize { background: #28c840; }
+
+/* Traffic-light window buttons */
+.titlebuttons button.close    { background: @tl_close;    }
+.titlebuttons button.minimize { background: @tl_minimize; }
+.titlebuttons button.maximize { background: @tl_maximize; }
 .titlebuttons button {
     border-radius: 50%;
     min-width:  13px;
@@ -47,104 +55,105 @@ headerbar .title {
     padding: 0;
     border: none;
     margin: 0 3px;
+    box-shadow: inset 0 1px 1px rgba(0,0,0,0.15);
 }
-.titlebuttons button:hover { filter: brightness(1.10); }
+.titlebuttons button:hover { filter: brightness(1.08); }
 
-/* ---- Buttons ---- */
+/* ─── Buttons ───────────────────────────────────────────────────────────── */
 button {
-    background: rgba(37, 99, 235, 0.08);
-    border: 1px solid @border;
+    background: @fill;
+    border: none;
     border-radius: 8px;
     color: @text;
     padding: 6px 14px;
-    transition: all 150ms ease;
+    font-size: 13px;
+    transition: background 120ms ease;
 }
-button:hover {
-    background: rgba(37, 99, 235, 0.15);
-    border-color: @border_hi;
-    box-shadow: 0 0 8px @glow;
-}
-button:active {
-    background: rgba(37, 99, 235, 0.22);
-}
+button:hover   { background: @fill2; }
+button:active  { background: rgba(0, 0, 0, 0.12); }
+
 button.suggested-action {
     background: @primary;
-    border-color: @primary;
-    color: #fff;
+    color: #FFFFFF;
     font-weight: 600;
+    border-radius: 980px;
+}
+button.suggested-action:hover  { background: @primary_hover; }
+button.destructive-action {
+    background: @destructive;
+    color: #FFFFFF;
+    border-radius: 980px;
 }
 
-/* ---- Entry ---- */
+/* ─── Entry / text input ────────────────────────────────────────────────── */
 entry {
-    background: rgba(255, 255, 255, 0.90);
-    border: 1px solid @border;
-    border-radius: 8px;
+    background: @surface;
+    border: 1px solid @separator;
+    border-radius: 10px;
     color: @text;
     padding: 6px 12px;
     caret-color: @primary;
 }
 entry:focus {
     border-color: @primary;
-    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.18);
+    box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.20);
 }
 
-/* ---- Menus ---- */
+/* ─── Menus ─────────────────────────────────────────────────────────────── */
 menu, .menu, menubar menu {
     background: rgba(255, 255, 255, 0.95);
-    border: 1px solid @border;
-    border-radius: 10px;
-    padding: 4px;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    border-radius: 12px;
+    padding: 6px;
+    box-shadow:
+        0 10px 36px rgba(0, 0, 0, 0.18),
+        0 2px 6px rgba(0, 0, 0, 0.08);
     color: @text;
 }
 menuitem {
-    padding: 4px 12px;
     border-radius: 6px;
+    padding: 4px 12px;
+    font-size: 13px;
 }
 menuitem:hover {
-    background: rgba(37, 99, 235, 0.10);
-    color: @text;
+    background: @primary;
+    color: #FFFFFF;
 }
 
-/* ---- Scrollbar ---- */
+/* ─── Scrollbar ─────────────────────────────────────────────────────────── */
 scrollbar slider {
-    background: rgba(37, 99, 235, 0.35);
+    background: rgba(0, 0, 0, 0.28);
     border-radius: 4px;
     min-width: 4px;
     min-height: 4px;
 }
-scrollbar slider:hover {
-    background: @primary;
-}
-scrollbar trough {
-    background: transparent;
-}
+scrollbar slider:hover { background: rgba(0, 0, 0, 0.45); }
+scrollbar trough      { background: transparent; }
 
-/* ---- Tooltip ---- */
+/* ─── Tooltip ───────────────────────────────────────────────────────────── */
 tooltip {
-    background: rgba(255, 255, 255, 0.95);
-    border: 1px solid @border;
-    border-radius: 8px;
-    color: @text;
+    background: rgba(30, 30, 30, 0.90);
+    border-radius: 7px;
+    border: none;
+    color: #FFFFFF;
     padding: 4px 10px;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+    font-size: 12px;
 }
 
-/* ---- Notebook ---- */
+/* ─── Notebook / tabs ───────────────────────────────────────────────────── */
 notebook tab {
     background: transparent;
     border: none;
-    color: @text_dim;
+    color: @text_tertiary;
     padding: 6px 16px;
-    border-radius: 8px 8px 0 0;
+    font-size: 13px;
 }
 notebook tab:checked {
-    color: @text;
-    background: rgba(37, 99, 235, 0.08);
+    color: @primary;
     border-bottom: 2px solid @primary;
 }
 
-/* ---- ListBox ---- */
+/* ─── ListBox ───────────────────────────────────────────────────────────── */
 list, listbox { background: transparent; }
 listboxrow {
     background: transparent;
@@ -152,45 +161,46 @@ listboxrow {
     padding: 4px 8px;
 }
 listboxrow:selected {
-    background: rgba(37, 99, 235, 0.12);
-    color: @text;
+    background: @primary;
+    color: #FFFFFF;
 }
-listboxrow:hover {
-    background: rgba(37, 99, 235, 0.06);
-}
+listboxrow:hover { background: @fill; }
 
-/* ---- Check/Radio ---- */
+/* ─── Check / Radio ─────────────────────────────────────────────────────── */
 checkbutton check, radiobutton radio {
-    background: rgba(255, 255, 255, 0.90);
-    border: 1px solid @border;
+    background: @surface;
+    border: 1px solid @separator;
     border-radius: 4px;
-    color: @text;
 }
 checkbutton check:checked, radiobutton radio:checked {
     background: @primary;
     border-color: @primary;
-    color: #fff;
+    color: #FFFFFF;
 }
 
-/* ---- Progress / Scale ---- */
+/* ─── Progress / Scale ──────────────────────────────────────────────────── */
 progressbar progress {
     background: @primary;
     border-radius: 4px;
 }
 progressbar trough {
-    background: rgba(37, 99, 235, 0.12);
+    background: rgba(0, 0, 0, 0.08);
     border-radius: 4px;
     min-height: 6px;
 }
 scale slider {
-    background: @primary;
+    background: @surface;
     border-radius: 50%;
-    min-width: 16px;
-    min-height: 16px;
-    box-shadow: 0 0 6px @glow;
+    min-width: 20px;
+    min-height: 20px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.28);
 }
 scale trough {
-    background: rgba(37, 99, 235, 0.15);
+    background: rgba(0, 0, 0, 0.12);
     border-radius: 4px;
     min-height: 4px;
+}
+scale trough highlight {
+    background: @primary;
+    border-radius: 4px;
 }

@@ -1,67 +1,78 @@
-/* nosface-bar/style.css — glassmorphism top bar */
+/* nosface-bar/style.css — macOS-accurate menubar */
 
-/* ---- Dark theme ---- */
-.theme-dark .nos-bar {
-    background: rgba(8, 8, 26, 0.80);
-    border-bottom: 1px solid rgba(100, 140, 255, 0.22);
-    box-shadow: 0 2px 24px rgba(77, 139, 255, 0.18);
-    color: #e2e8f0;
-}
-
-/* ---- Light theme ---- */
-.theme-light .nos-bar {
-    background: rgba(255, 255, 255, 0.78);
-    border-bottom: 1px solid rgba(77, 139, 255, 0.30);
-    box-shadow: 0 2px 16px rgba(37, 99, 235, 0.12);
-    color: #0f172a;
-}
-
-/* ---- Shared bar styles ---- */
+/* ─── Core bar ─────────────────────────────────────────────────────────── */
 .nos-bar {
-    font-family: "SF Pro Display", "Inter", sans-serif;
+    background: rgba(246, 246, 246, 0.90);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.10);
+    font-family: -apple-system, "SF Pro Text", "Helvetica Neue", "Inter", sans-serif;
     font-size: 13px;
-    min-height: 32px;
+    min-height: 28px;
+    color: #1D1D1F;
 }
 
-/* Apple logo button */
+/* ─── nOS logo / Apple-menu equivalent ─────────────────────────────────── */
 .apple-btn {
     background: transparent;
     border: none;
+    border-radius: 4px;
     padding: 0 10px;
     font-size: 16px;
-    color: inherit;
-    min-height: 32px;
+    font-weight: 900;
+    color: #1D1D1F;
+    min-height: 28px;
 }
 .apple-btn:hover {
-    background: rgba(128, 128, 255, 0.12);
-    border-radius: 0;
+    background: rgba(0, 0, 0, 0.08);
 }
 
-/* App name */
+/* ─── Active app name ───────────────────────────────────────────────────── */
 .app-name {
-    font-weight: 600;
+    font-weight: 700;
     font-size: 13px;
-    color: inherit;
-    padding: 0 4px;
+    color: #1D1D1F;
+    padding: 0 6px;
 }
 
-/* Clock */
+/* ─── Menu item buttons (File, Edit, View …) ────────────────────────────── */
+.menu-item-btn {
+    background: transparent;
+    border: none;
+    border-radius: 4px;
+    color: #1D1D1F;
+    font-size: 13px;
+    font-weight: 400;
+    padding: 0 8px;
+    min-height: 28px;
+}
+.menu-item-btn:hover {
+    background: rgba(0, 0, 0, 0.08);
+}
+
+/* ─── Vertical separator between logo+appname and menu items ──────────── */
+.menu-sep {
+    min-height: 14px;
+    min-width: 1px;
+    background: rgba(0, 0, 0, 0.16);
+    margin: 0 4px;
+}
+
+/* ─── Clock (center) ────────────────────────────────────────────────────── */
 .clock {
     font-size: 13px;
-    color: inherit;
-    /* font-variant-numeric unsupported in GTK3 CSS parser */
-    padding: 0 8px;
+    font-weight: 400;
+    color: #1D1D1F;
+    padding: 0 10px;
 }
 
-/* Tray buttons */
+/* ─── Status-area tray icons ────────────────────────────────────────────── */
 .tray-btn {
     background: transparent;
     border: none;
-    padding: 2px 4px;
-    border-radius: 6px;
-    min-height: 24px;
-    color: inherit;
+    border-radius: 4px;
+    padding: 2px 6px;
+    min-height: 22px;
+    color: #1D1D1F;
 }
 .tray-btn:hover {
-    background: rgba(128, 128, 255, 0.15);
+    background: rgba(0, 0, 0, 0.08);
 }

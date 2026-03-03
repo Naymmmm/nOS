@@ -13,7 +13,7 @@ import dbus.service
 import dbus.mainloop.glib
 
 
-THEME    = os.environ.get('NOS_THEME', 'dark')
+THEME    = os.environ.get('NOS_THEME', 'light')
 CSS_FILE = os.path.join(os.path.dirname(__file__), 'style.css')
 
 NOTIF_WIDTH   = 340

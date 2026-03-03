@@ -11,22 +11,22 @@ import subprocess
 import math
 
 
-THEME   = os.environ.get('NOS_THEME', 'dark')
+THEME   = os.environ.get('NOS_THEME', 'light')
 CSS_FILE = os.path.join(os.path.dirname(__file__), 'style.css')
 
 # Default dock apps: (name, icon, command)
 DEFAULT_APPS = [
-    ('Files',     'system-file-manager',    'thunar'),
+    ('Finder',    'system-file-manager',    'thunar'),
     ('Terminal',  'utilities-terminal',     'alacritty'),
-    ('Browser',   'web-browser',            'firefox'),
+    ('Firefox',   'web-browser',            'firefox'),
     ('Settings',  'preferences-system',     'nos-settings'),
     ('Editor',    'text-editor',            'gedit'),
     ('Music',     'audio-player',           'rhythmbox'),
 ]
 
-BASE_ICON_SIZE = 48
-MAX_ICON_SIZE  = 72
-MAGNIFY_RANGE  = 80   # px from icon center that affects magnification
+BASE_ICON_SIZE = 60
+MAX_ICON_SIZE  = 88
+MAGNIFY_RANGE  = 100   # px from icon center that affects magnification
 
 
 class DockIcon(Gtk.EventBox):
@@ -39,23 +39,25 @@ class DockIcon(Gtk.EventBox):
 
         self.get_style_context().add_class('dock-icon-box')
 
-        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=2)
+        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
         self.add(vbox)
 
-        self.img = Gtk.Image.new_from_icon_name(icon_name, Gtk.IconSize.DIALOG)
-        self.img.set_pixel_size(BASE_ICON_SIZE)
-        self.img.get_style_context().add_class('dock-icon')
-        vbox.pack_start(self.img, False, False, 0)
-
-        self.dot = Gtk.Label(label='•')
-        self.dot.get_style_context().add_class('dock-dot')
-        self.dot.set_no_show_all(True)
-        vbox.pack_start(self.dot, False, False, 0)
-
+        # Tooltip ABOVE icon (macOS style)
         self.tooltip = Gtk.Label(label=name)
         self.tooltip.get_style_context().add_class('dock-tooltip')
         self.tooltip.set_no_show_all(True)
         vbox.pack_start(self.tooltip, False, False, 0)
+
+        self.img = Gtk.Image.new_from_icon_name(icon_name, Gtk.IconSize.DIALOG)
+        self.img.set_pixel_size(BASE_ICON_SIZE)
+        self.img.get_style_context().add_class('dock-icon')
+        vbox.pack_start(self.img, False, False, 4)
+
+        # Running indicator dot below icon
+        self.dot = Gtk.Label(label='•')
+        self.dot.get_style_context().add_class('dock-dot')
+        self.dot.set_no_show_all(True)
+        vbox.pack_start(self.dot, False, False, 0)
 
         self.connect('button-press-event', self._on_click)
         self.connect('enter-notify-event', self._on_enter)
@@ -120,7 +122,7 @@ class NosDock(Gtk.Window):
         GtkLayerShell.init_for_window(self)
         GtkLayerShell.set_layer(self, GtkLayerShell.Layer.TOP)
         GtkLayerShell.set_anchor(self, GtkLayerShell.Edge.BOTTOM, True)
-        GtkLayerShell.set_margin(self, GtkLayerShell.Edge.BOTTOM, 12)
+        GtkLayerShell.set_margin(self, GtkLayerShell.Edge.BOTTOM, 16)
         GtkLayerShell.set_exclusive_zone(self, -1)   # don't reserve space
 
         # Content

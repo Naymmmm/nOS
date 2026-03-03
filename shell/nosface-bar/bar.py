@@ -12,8 +12,10 @@ import datetime
 import threading
 
 
-THEME = os.environ.get('NOS_THEME', 'dark')
+THEME = os.environ.get('NOS_THEME', 'light')
 CSS_FILE = os.path.join(os.path.dirname(__file__), 'style.css')
+
+MENU_ITEMS = ('File', 'Edit', 'View', 'Window', 'Help')
 
 
 class StatusArea(Gtk.Box):
@@ -36,20 +38,29 @@ class StatusArea(Gtk.Box):
 
 class AppMenuArea(Gtk.Box):
     def __init__(self):
-        super().__init__(orientation=Gtk.Orientation.HORIZONTAL, spacing=4)
+        super().__init__(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
         self.get_style_context().add_class('app-menu-area')
 
-        apple_btn = Gtk.Button(label='')
-        apple_btn.get_style_context().add_class('apple-btn')
-        apple_btn.connect('clicked', self._on_apple_clicked)
-        self.pack_start(apple_btn, False, False, 0)
+        logo_btn = Gtk.Button(label='n')
+        logo_btn.get_style_context().add_class('apple-btn')
+        logo_btn.connect('clicked', self._on_logo_clicked)
+        self.pack_start(logo_btn, False, False, 0)
 
-        self.app_name = Gtk.Label(label='Nosface')
+        self.app_name = Gtk.Label(label='Finder')
         self.app_name.get_style_context().add_class('app-name')
-        self.pack_start(self.app_name, False, False, 8)
+        self.pack_start(self.app_name, False, False, 4)
 
-    def _on_apple_clicked(self, btn):
-        # Launch application launcher
+        sep = Gtk.Separator(orientation=Gtk.Orientation.VERTICAL)
+        sep.get_style_context().add_class('menu-sep')
+        self.pack_start(sep, False, False, 4)
+
+        for item in MENU_ITEMS:
+            btn = Gtk.Button(label=item)
+            btn.set_relief(Gtk.ReliefStyle.NONE)
+            btn.get_style_context().add_class('menu-item-btn')
+            self.pack_start(btn, False, False, 0)
+
+    def _on_logo_clicked(self, btn):
         subprocess.Popen(['nosface-launcher'])
 
     def set_active_app(self, name: str):
@@ -94,9 +105,9 @@ class NosBar(Gtk.Window):
         GtkLayerShell.set_anchor(self, GtkLayerShell.Edge.TOP, True)
         GtkLayerShell.set_anchor(self, GtkLayerShell.Edge.LEFT, True)
         GtkLayerShell.set_anchor(self, GtkLayerShell.Edge.RIGHT, True)
-        GtkLayerShell.set_exclusive_zone(self, 32)
+        GtkLayerShell.set_exclusive_zone(self, 28)
 
-        self.set_size_request(-1, 32)
+        self.set_size_request(-1, 28)
 
         # Layout: [AppMenu | ... | Clock/Status | Tray]
         hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)

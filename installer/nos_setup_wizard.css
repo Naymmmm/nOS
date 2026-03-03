@@ -1,103 +1,136 @@
-/* nos_setup_wizard.css — first-run wizard styling */
+/* nos_setup_wizard.css — macOS-style first-run wizard */
 
+/* ─── Window ────────────────────────────────────────────────────────────── */
 .wizard-window {
-    background: #08081a;
-    color: #e2e8f0;
-    font-family: "SF Pro Display", "Inter", sans-serif;
+    background: #FFFFFF;
+    color: #1D1D1F;
+    font-family: -apple-system, "SF Pro Text", "Helvetica Neue", "Inter", sans-serif;
 }
 
+/* ─── Traffic-light titlebar ────────────────────────────────────────────── */
+.wizard-titlebar {
+    background: #F2F2F7;
+    border-bottom: 1px solid #E5E5EA;
+    min-height: 38px;
+    padding: 0 14px;
+}
+
+.traffic-light {
+    border-radius: 50%;
+    min-width: 12px;
+    min-height: 12px;
+    border: none;
+    padding: 0;
+    margin-right: 4px;
+    box-shadow: inset 0 1px 1px rgba(0,0,0,0.18);
+}
+.traffic-red    { background: #FF5F57; }
+.traffic-yellow { background: #FFBD2E; }
+.traffic-green  { background: #28C840; }
+.traffic-light:hover { filter: brightness(1.08); }
+
+/* ─── Page content ──────────────────────────────────────────────────────── */
 .wizard-title {
-    font-size: 24px;
+    font-size: 22px;
     font-weight: 700;
-    color: #e2e8f0;
-    margin-bottom: 6px;
+    color: #1D1D1F;
+    margin-bottom: 4px;
 }
 
 .wizard-desc {
     font-size: 14px;
-    color: #94a3b8;
-    line-height: 1.6;
+    color: #86868B;
+    line-height: 1.5;
 }
 
-/* Theme buttons */
+/* ─── Theme toggle buttons ──────────────────────────────────────────────── */
 .theme-btn {
-    background: rgba(18, 18, 52, 0.70);
-    border: 2px solid rgba(100, 140, 255, 0.25);
+    background: #F2F2F7;
+    border: 2px solid #E5E5EA;
     border-radius: 14px;
-    color: #e2e8f0;
-    font-size: 16px;
-    padding: 18px 32px;
-    transition: all 150ms ease;
+    color: #1D1D1F;
+    font-size: 15px;
+    font-weight: 500;
+    padding: 16px 28px;
+    transition: all 120ms ease;
+}
+.theme-btn:hover {
+    background: #E8E8ED;
+    border-color: #C7C7CC;
 }
 .theme-btn:checked,
 .theme-btn:active {
-    background: rgba(77, 139, 255, 0.22);
-    border-color: #4d8bff;
-    box-shadow: 0 0 16px rgba(77, 139, 255, 0.40);
-    color: #fff;
+    background: rgba(0, 122, 255, 0.10);
+    border-color: #007AFF;
+    color: #007AFF;
 }
 
-/* Combo */
+/* ─── Combo box ─────────────────────────────────────────────────────────── */
 .wizard-combo {
-    background: rgba(18, 18, 52, 0.55);
-    border: 1px solid rgba(100, 140, 255, 0.22);
+    background: #F2F2F7;
+    border: 1px solid #E5E5EA;
     border-radius: 10px;
-    color: #e2e8f0;
+    color: #1D1D1F;
     padding: 8px 14px;
-    min-width: 240px;
+    min-width: 260px;
     font-size: 14px;
 }
 
-/* Checkboxes */
+/* ─── Checkboxes ────────────────────────────────────────────────────────── */
 .wizard-check {
-    color: #e2e8f0;
+    color: #1D1D1F;
     font-size: 14px;
-    padding: 4px 0;
+    padding: 5px 0;
 }
 
-/* Footer */
+/* ─── Footer ────────────────────────────────────────────────────────────── */
 .wizard-footer {
-    background: rgba(18, 18, 52, 0.85);
-    border-top: 1px solid rgba(100, 140, 255, 0.18);
-    min-height: 56px;
-    padding: 8px 0;
+    background: #F2F2F7;
+    border-top: 1px solid #E5E5EA;
+    min-height: 60px;
+    padding: 10px 0;
 }
 
-/* Dots */
+/* ─── Progress dots ─────────────────────────────────────────────────────── */
 .wizard-dot {
-    font-size: 20px;
-    color: rgba(100, 140, 255, 0.30);
-    transition: color 200ms ease;
+    font-size: 9px;
+    color: #C7C7CC;
+    transition: color 180ms ease;
 }
 .dot-active {
-    color: #4d8bff;
-    text-shadow: 0 0 8px rgba(77, 139, 255, 0.70);
+    color: #007AFF;
 }
 
-/* Nav buttons */
+/* ─── Navigation buttons ────────────────────────────────────────────────── */
 .wizard-nav-btn {
-    background: rgba(77, 139, 255, 0.10);
-    border: 1px solid rgba(100, 140, 255, 0.25);
-    border-radius: 10px;
-    color: #e2e8f0;
-    padding: 8px 20px;
+    background: rgba(0, 0, 0, 0.06);
+    border: none;
+    border-radius: 980px;
+    color: #1D1D1F;
+    padding: 7px 20px;
     font-size: 13px;
+    font-weight: 500;
 }
 .wizard-nav-btn:hover {
-    background: rgba(77, 139, 255, 0.20);
+    background: rgba(0, 0, 0, 0.10);
+}
+.wizard-nav-btn:insensitive {
+    color: #C7C7CC;
+    background: rgba(0, 0, 0, 0.03);
 }
 
 .wizard-nav-btn-primary {
-    background: linear-gradient(135deg, #4d8bff 0%, #2563eb 100%);
+    background: #007AFF;
     border: none;
-    border-radius: 10px;
-    color: #fff;
-    padding: 8px 20px;
+    border-radius: 980px;
+    color: #FFFFFF;
+    padding: 7px 20px;
     font-size: 13px;
     font-weight: 600;
-    box-shadow: 0 4px 12px rgba(77, 139, 255, 0.40);
 }
 .wizard-nav-btn-primary:hover {
-    background: linear-gradient(135deg, #5d9bff 0%, #3573fb 100%);
-    box-shadow: 0 6px 20px rgba(77, 139, 255, 0.55);
+    background: #0071EB;
+}
+.wizard-nav-btn-primary:active {
+    background: #0062CC;
 }

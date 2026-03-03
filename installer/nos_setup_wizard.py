@@ -30,7 +30,7 @@ def wizard_page_welcome():
     logo.set_pixel_size(80)
     box.pack_start(logo, False, False, 0)
 
-    title = Gtk.Label(label='Welcome to Nosface')
+    title = Gtk.Label(label='Welcome to nOS')
     title.get_style_context().add_class('wizard-title')
     box.pack_start(title, False, False, 0)
 
@@ -144,7 +144,7 @@ def wizard_page_finish():
     title.get_style_context().add_class('wizard-title')
     box.pack_start(title, False, False, 0)
 
-    desc = Gtk.Label(label='Nosface is ready. Click "Start" to begin.')
+    desc = Gtk.Label(label='nOS is ready. Click "Start" to begin.')
     desc.get_style_context().add_class('wizard-desc')
     box.pack_start(desc, False, False, 0)
 
@@ -162,10 +162,10 @@ WIZARD_PAGES = [
 
 class NosSetupWizard(Gtk.Window):
     def __init__(self):
-        super().__init__(title='Nosface Setup')
-        self.set_default_size(560, 420)
+        super().__init__(title='nOS Setup')
+        self.set_default_size(580, 440)
         self.set_resizable(False)
-        self.set_position(Gtk.WindowPosition.CENTER)
+        self.set_decorated(False)
         load_css()
         self.get_style_context().add_class('wizard-window')
 
@@ -174,6 +174,24 @@ class NosSetupWizard(Gtk.Window):
 
         outer = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         self.add(outer)
+
+        # ── Traffic-light titlebar ──────────────────────────────────────────
+        titlebar = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
+        titlebar.get_style_context().add_class('wizard-titlebar')
+        titlebar.set_valign(Gtk.Align.CENTER)
+        outer.pack_start(titlebar, False, False, 0)
+
+        for cls, action in (('traffic-red',    self._on_close),
+                             ('traffic-yellow', None),
+                             ('traffic-green',  None)):
+            dot = Gtk.Button()
+            dot.set_size_request(12, 12)
+            dot.set_relief(Gtk.ReliefStyle.NONE)
+            dot.get_style_context().add_class('traffic-light')
+            dot.get_style_context().add_class(cls)
+            if action:
+                dot.connect('clicked', action)
+            titlebar.pack_start(dot, False, False, 0)
 
         # Stack
         self.stack = Gtk.Stack()
@@ -249,6 +267,10 @@ class NosSetupWizard(Gtk.Window):
         self._page_idx += 1
         self.stack.set_visible_child_name(str(self._page_idx))
         self._update_nav()
+
+    def _on_close(self, btn):
+        self.destroy()
+        Gtk.main_quit()
 
     def _go_back(self, btn):
         if self._page_idx > 0:
